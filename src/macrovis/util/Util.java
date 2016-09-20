@@ -1,12 +1,19 @@
 package macrovis.util;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import javax.swing.JTextPane;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.Document;
 
 public class Util {
 
@@ -39,7 +46,8 @@ public class Util {
 
 		Pair<List<String>, Boolean> trace =
 				parseStringTrace(json.substring(json.indexOf(":", index) + 1, json.length()-1));
-		if (trace == null) {
+		// If size < 2 we know there's been an error
+		if (trace == null || trace.first.size() < 2) {
 			return null;
 		}
 		return new ExpansionTrace(span, trace.second, trace.first);
@@ -111,5 +119,32 @@ public class Util {
 		public Pair(T1 f, T2 s) {
 			first = f; second = s;
 		}
+	}
+
+	// Stream to read from a process output as it runs (to prevent hangs).
+	// Writes to a supplied text pane as it goes.
+	public static class ProcessStream extends Thread {
+		InputStream is;
+		JTextPane text;
+
+	    public ProcessStream(InputStream is, JTextPane text) {
+	        this.is = is;
+	        this.text = text;
+	    }
+
+	    public void run() {
+	        try {
+	            InputStreamReader isr = new InputStreamReader(is);
+	            BufferedReader br = new BufferedReader(isr);
+	            String line = null;
+	            while ((line = br.readLine()) != null) {
+	            	Document doc = text.getDocument();
+	                doc.insertString(doc.getLength(), "\n", null);
+	                doc.insertString(doc.getLength(), line, null);
+	            }
+	        } catch (IOException | BadLocationException e) {
+	        	e.printStackTrace();
+	        }
+	    }
 	}
 }

@@ -1,6 +1,5 @@
 package macrovis.gui;
 
-import java.awt.Cursor;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -10,13 +9,11 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Scanner;
 
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -52,7 +49,9 @@ public class MacroVisualiser extends JFrame {
         tabbedPane = new javax.swing.JTabbedPane();
         sourcePane = new javax.swing.JPanel();
         sourceScrollPane = new javax.swing.JScrollPane();
+        sourceSplitPane = new javax.swing.JSplitPane();
         sourceText = new javax.swing.JTextPane();
+        consolePane = new javax.swing.JPanel();
         consoleScrollPane = new javax.swing.JScrollPane();
         consoleText = new javax.swing.JTextPane();
         consoleLabel = new javax.swing.JLabel();
@@ -118,6 +117,9 @@ public class MacroVisualiser extends JFrame {
 
         sourcePane.setPreferredSize(new java.awt.Dimension(1080, 680));
 
+        sourceSplitPane.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
+        sourceSplitPane.setResizeWeight(0.5);
+
         sourceScrollPane.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         sourceScrollPane.setPreferredSize(new java.awt.Dimension(1080, 540));
         sourceText.setFont(new java.awt.Font("Consolas", Font.PLAIN, 12));
@@ -129,6 +131,7 @@ public class MacroVisualiser extends JFrame {
         });
 
         sourceScrollPane.setViewportView(sourceText);
+        sourceSplitPane.setLeftComponent(sourceScrollPane);
 
         consoleScrollPane.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         consoleScrollPane.setAlignmentX(0.0F);
@@ -150,37 +153,53 @@ public class MacroVisualiser extends JFrame {
         });
         compileButton.setEnabled(false);
 
-        javax.swing.GroupLayout sourcePaneLayout = new javax.swing.GroupLayout(sourcePane);
-        sourcePane.setLayout(sourcePaneLayout);
-        sourcePaneLayout.setHorizontalGroup(
-            sourcePaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(sourcePaneLayout.createSequentialGroup()
-                .addGroup(sourcePaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(consoleScrollPane, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 1075, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, sourcePaneLayout.createSequentialGroup()
-                        .addComponent(consoleLabel)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(filler2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(compileButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(filler1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(sourceScrollPane, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 1075, Short.MAX_VALUE))
-                .addGap(0, 0, 0))
-        );
-        sourcePaneLayout.setVerticalGroup(
-            sourcePaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(sourcePaneLayout.createSequentialGroup()
-                .addComponent(sourceScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 515, Short.MAX_VALUE)
+        javax.swing.GroupLayout consolePaneLayout = new javax.swing.GroupLayout(consolePane);
+        consolePane.setLayout(consolePaneLayout);
+        consolePaneLayout.setHorizontalGroup(
+            consolePaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(consolePaneLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(consoleLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(sourcePaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(sourcePaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addComponent(filler2, javax.swing.GroupLayout.DEFAULT_SIZE, 351, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(compileButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(filler1, javax.swing.GroupLayout.DEFAULT_SIZE, 456, Short.MAX_VALUE)
+                .addContainerGap())
+            .addComponent(consoleScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        consolePaneLayout.setVerticalGroup(
+            consolePaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(consolePaneLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(consolePaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(consolePaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                         .addComponent(filler1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(filler2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(compileButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(consoleLabel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(consoleScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(consoleScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 123, Short.MAX_VALUE))
+        );
+
+        sourceSplitPane.setRightComponent(consolePane);
+
+        javax.swing.GroupLayout sourcePaneLayout = new javax.swing.GroupLayout(sourcePane);
+        sourcePane.setLayout(sourcePaneLayout);
+        sourcePaneLayout.setHorizontalGroup(
+            sourcePaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(sourcePaneLayout.createSequentialGroup()
+                .addGap(0, 0, 0)
+                .addComponent(sourceSplitPane)
+                .addGap(0, 0, 0))
+        );
+        sourcePaneLayout.setVerticalGroup(
+            sourcePaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(sourcePaneLayout.createSequentialGroup()
+                .addGap(0, 0, 0)
+                .addComponent(sourceSplitPane)
+                .addGap(0, 0, 0))
         );
 
         tabbedPane.addTab("Source Editor", sourcePane);
@@ -471,6 +490,7 @@ public class MacroVisualiser extends JFrame {
 
         pack();
         viewerSplitPane.setDividerLocation(0.75);
+        sourceSplitPane.setDividerLocation(0.75);
     }
 
     private void open(boolean newFile) {
@@ -507,6 +527,7 @@ public class MacroVisualiser extends JFrame {
         					sourceBytes = new byte[0];
         					sourceText.setText("");
         					viewText.setText("");
+        					consoleText.setText("");
         					changed = false;
         					traceDepth = 0;
         					depth = 0;
@@ -535,6 +556,7 @@ public class MacroVisualiser extends JFrame {
 					sourceBytes = new byte[0];
 					sourceText.setText("");
 					viewText.setText("");
+					consoleText.setText("");
 					changed = false;
 					traceDepth = 0;
 					depth = 0;
@@ -624,11 +646,10 @@ public class MacroVisualiser extends JFrame {
         }
     }
 
-    @SuppressWarnings("resource")
 	private void compile() {
-    	// Need to disable the compile button and set the cursor to busy until we're done
+    	// Need to disable the compile button until we're done
+    	consoleText.setText("Compiling...");
     	compileButton.setEnabled(false);
-    	rootPane.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 
     	// Clear existing files, that way we know if the run was successful
     	String exeName = filename.substring(0, filename.lastIndexOf('.'));
@@ -653,13 +674,11 @@ public class MacroVisualiser extends JFrame {
     	pb.redirectErrorStream(true);
     	try {
     		Process p = pb.start();
+    		consoleText.setText("Compile Output:");
+    		Util.ProcessStream stream = new Util.ProcessStream(p.getInputStream(), consoleText);
+    		stream.start();
     		int result = p.waitFor();
-    		InputStream stream = p.getInputStream();
 
-    		// \\A is start of text, this reads the entire stream as a single token
-    		// Also note an input stream can't be closed, so this warning is a dud.
-			Scanner s = new Scanner(stream).useDelimiter("\\A");
-    		String compile = s.hasNext() ? s.next() : "";
     		if (json.exists()) {
     			traces = Util.readAnalysis(json.getAbsolutePath());
     			setBaseSizes();
@@ -667,16 +686,14 @@ public class MacroVisualiser extends JFrame {
                 viewButtons[2].setEnabled(true);
                 viewButtons[3].setEnabled(true);
     		}
-    		String output = null;
     		if (result == 0) {
     			pb.command(exeName);
+    			consoleText.setText(consoleText.getText() + "\n- - -\nRun Output:\n");
+    			stream = new Util.ProcessStream(p.getInputStream(), consoleText);
     			Process run = pb.start();
+    			stream.start();
     			run.waitFor();
-    			s = new Scanner(run.getInputStream()).useDelimiter("\\A");
-        		output = s.hasNext() ? s.next() : null;
     		}
-    		output = (output == null) ? "" : "\n- - -\nRun output:\n" + output;
-    		consoleText.setText(String.format("Compile Output:\n%s%s\n", compile, output));
     	} catch(Exception e) {
     		JOptionPane.showMessageDialog(rootPane,
     									  "Error: Could not compile code:" + e.getMessage(),
@@ -684,7 +701,6 @@ public class MacroVisualiser extends JFrame {
     									  JOptionPane.ERROR_MESSAGE);
     		e.printStackTrace();
     	} finally {
-    		rootPane.setCursor(Cursor.getDefaultCursor());
             compileButton.setEnabled(true);
     	}
     }
@@ -714,6 +730,7 @@ public class MacroVisualiser extends JFrame {
     		nameLabel.setText("No macro selected");
     		nameLabel.setEnabled(false);
     		showChangesBox.setEnabled(false);
+    		showChangesBox.setSelected(false);
     		for (int i = 0; i < 4; i++) {
     			traceButtons[i].setEnabled(false);
     		}
@@ -873,6 +890,7 @@ public class MacroVisualiser extends JFrame {
     // Variables declaration
     private javax.swing.JButton compileButton;
     private javax.swing.JLabel consoleLabel;
+    private javax.swing.JPanel consolePane;
     private javax.swing.JScrollPane consoleScrollPane;
     private javax.swing.JTextPane consoleText;
     private javax.swing.Box.Filler filler1;
@@ -890,6 +908,7 @@ public class MacroVisualiser extends JFrame {
     private javax.swing.JMenuItem saveAsItem;
     private javax.swing.JMenuItem saveItem;
     private javax.swing.JPanel sourcePane;
+    private javax.swing.JSplitPane sourceSplitPane;
     private javax.swing.JScrollPane sourceScrollPane;
     private javax.swing.JTextPane sourceText;
     private javax.swing.JTabbedPane tabbedPane;
