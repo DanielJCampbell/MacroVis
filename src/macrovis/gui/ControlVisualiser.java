@@ -435,10 +435,10 @@ public class ControlVisualiser extends javax.swing.JFrame {
     	ProcessBuilder pb = new ProcessBuilder(scriptDir + "/script/controlcompile.sh");
     	pb.environment().put("FILENAME", filename);
     	pb.directory(new File(parent));
-    	//pb.redirectErrorStream(true);
     	try {
     		Process p = pb.start();
     		consoleText.setText("Compile Output:");
+    		viewText.setText("");
     		Util.ProcessStream stream = new Util.ProcessStream(p.getInputStream(), viewText);
     		Util.ProcessStream err = new Util.ProcessStream(p.getErrorStream(), consoleText);
     		stream.start();
@@ -447,19 +447,19 @@ public class ControlVisualiser extends javax.swing.JFrame {
     		expandedText = viewText.getText();
     		backButton.setEnabled(true);
     		if (result == 0) {
-    			pb.command(exeName);
     			pb.redirectErrorStream(true);
-    			consoleText.setText(consoleText.getText() + "\n- - -\nRun Output:\n");
-    			stream = new Util.ProcessStream(p.getInputStream(), consoleText);
+    			pb.command(exeName);
+    			consoleText.setText("Run Output:");
     			Process run = pb.start();
-    			stream.start();
+    			Util.ProcessStream output = new Util.ProcessStream(run.getInputStream(), consoleText);
+    			output.start();
     			run.waitFor();
     		}
     	} catch(Exception e) {
     		JOptionPane.showMessageDialog(rootPane,
-    									  "Error: Could not compile code:" + e.getMessage(),
-    									  "Error",
-    									  JOptionPane.ERROR_MESSAGE);
+    				"Error: Could not compile code:" + e.getMessage(),
+    				"Error",
+    				JOptionPane.ERROR_MESSAGE);
     		e.printStackTrace();
     	} finally {
             compileButton.setEnabled(true);

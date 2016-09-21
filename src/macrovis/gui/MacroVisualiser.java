@@ -688,9 +688,9 @@ public class MacroVisualiser extends JFrame {
     		}
     		if (result == 0) {
     			pb.command(exeName);
-    			consoleText.setText(consoleText.getText() + "\n- - -\nRun Output:\n");
-    			stream = new Util.ProcessStream(p.getInputStream(), consoleText);
+    			consoleText.setText(consoleText.getText() + "\n- - -\nRun Output:");
     			Process run = pb.start();
+    			stream = new Util.ProcessStream(run.getInputStream(), consoleText);
     			stream.start();
     			run.waitFor();
     		}
