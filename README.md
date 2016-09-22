@@ -5,7 +5,7 @@ Hey, thanks for taking an interest in this study, before you begin please read t
 
 # STARTUP:
 
-Setup consists of a single step - reset this directory to put all the example files back in their base state. Open the terminal, navigate to MacroVis folder, and run the command `git reset --hard ~HEAD`
+Setup consists of a single step - reset this directory to put all the example files back in their base state. Open the terminal, navigate to MacroVis folder, and run the command `git reset --hard HEAD`
 
 After that, to open the tool, it's just `java -jar MacroVis.jar`
 
